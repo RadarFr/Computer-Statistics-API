@@ -7,8 +7,9 @@ collect information on the computer. This comes together to get a local API whic
 
 # Examples
 This repo also contains examples of what the data can be used for. In this repo, it has been used to make a simple Web Monitoring 
-Application, which can be access over the internet with the right configuration and port forwarding. The site uses ```Chart.js```
-as well as ```Bootstrap``` to give structure and display data which is readable to humans.
+Application which can be access over the internet with the right configuration and port forwarding. The site uses ```Chart.js```
+as well as ```Bootstrap``` to give structure and display data which is readable to humans, with our backend being the ```FastAPI```
+to host and collect the data from the local machine as well as ```Node.Js``` to host our front end and serve it to users.
 
 This can be useful for people in the crypto space with monitoring their servers which are not in their immediate access, such
 as off site farms which cheaper electricity and such.
