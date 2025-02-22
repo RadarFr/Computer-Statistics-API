@@ -15,12 +15,12 @@ as off site farms which cheaper electricity and such.
 
 # Known improvements to be made:
 -Cpu Temp Monitoring
--Support Mutli GPU configurations
+*Support Mutli GPU configurations
 >Will be hard, but duable because I dont currently have two or more gpus on hand.
--Support Multi CPU configurations.
+*Support Multi CPU configurations.
 >This is a feature I will add in the later stages of the project, as most miners the users of this project will have muilit GPUS and not CPUS
 >as CPU mining isnt very profitable.
--Support AMD GPU's
++Support AMD GPU's
 >I will have to add this soon to accommodate for red team users and GPU miners.
 
 Last Major Update: 22/02/2025
