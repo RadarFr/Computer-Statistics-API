@@ -13,14 +13,13 @@ as well as ```Bootstrap``` to give structure and display data which is readable 
 This can be useful for people in the crypto space with monitoring their servers which are not in their immediate access, such
 as off site farms which cheaper electricity and such.
 
-# Known improvements to be made:
--Cpu Temp Monitoring
-*Support Mutli GPU configurations
->Will be hard, but duable because I dont currently have two or more gpus on hand.
-*Support Multi CPU configurations.
->This is a feature I will add in the later stages of the project, as most miners the users of this project will have muilit GPUS and not CPUS
->as CPU mining isnt very profitable.
-+Support AMD GPU's
->I will have to add this soon to accommodate for red team users and GPU miners.
+## Known Improvements to be Made:
+- CPU Temp Monitoring
+- Support for Multi-GPU configurations  
+  > Will be hard, but doable because I don’t currently have two or more GPUs on hand.
+- Support for Multi-CPU configurations  
+  > This is a feature I will add in the later stages of the project, as most miners using this project will have multi-GPUs, not multi-CPUs, since CPU mining isn't very profitable.
+- Support for AMD GPUs  
+  > I will have to add this soon to accommodate red-team users and GPU miners.
 
-Last Major Update: 22/02/2025
+**Last Major Update:** 22/02/2025
