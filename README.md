@@ -13,8 +13,12 @@ as well as ```Bootstrap``` to give structure and display data which is readable 
 This can be useful for people in the crypto space with monitoring their servers which are not in their immediate access, such
 as off site farms which cheaper electricity and such.
 
-## Known Improvements to be Made:
+This example isnt optmised for lower API calls, and calls quite a large ammount. 
+TODO: Fix this.
+
+## Known API Improvements to be Made:
 - CPU Temp Monitoring
+  >Will have to add as its a very useful statistic to have on hand.
 - Support for Multi-GPU configurations  
   > Will be hard, but doable because I don’t currently have two or more GPUs on hand.
 - Support for Multi-CPU configurations  
