@@ -25,6 +25,6 @@ TODO: Fix this.
 - Support for Multi-CPU configurations  
   > This is a feature I will add in the later stages of the project, as most miners using this project will have multi-GPUs, not multi-CPUs, since CPU mining isn't very profitable.
 - Support for AMD GPUs  
-  > I will have to add this soon to accommodate red-team users and GPU miners.
+  > I will have to add this soon to accommodate red-team users and GPU miners, uses The AMD SMI Python Library
 
 **Last Major Update:** 22/02/2025
