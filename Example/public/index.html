@@ -21,41 +21,34 @@
   </style>
 </head>
 <body>
-  <h2>Usage</h2>
+  <h2>Basic View</h2>
   <div id="chart-container">
     <canvas id="diskGraphing"></canvas>
   </div>
   <div id="chart-container">
     <canvas id="usageGraphing"></canvas>
   </div>
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script>
-
-    async function fetchDiskData(n) {
+    // Global variables
+    let usedSpace = 1;
+    let totalSpace = 1;
+    let freeSpace = 1;
+  
+    async function fetchDiskData() {
       try {
         const response = await fetch('http://localhost:8000/stats');
         const data = await response.json();
-
-        if (n === "total"){
-          return parseFloat(data.Disk.total);
-        }
-        if (n === "free"){
-          return parseFloat(data.Disk.free);
-        }
-        if (n === "utilization"){
-          return parseFloat(data.Disk.utilization);
-        }
-        if (n === "percent"){
-          return parseFloat(data.Disk.percent);
-        }
+        totalSpace = parseFloat(data.Disk.total);
+        freeSpace = parseFloat(data.Disk.free);
+        usedSpace = parseFloat(data.Disk.utilization);
+        console.log('Disk Data:', { totalSpace, freeSpace, usedSpace });
       } catch (error) {
         console.error('Error fetching data:', error);
-        return null;
       }
     }
-
-    // Custom plugin to draw center text based on percentage
+  
+    // Custom plugin for center text remains the same
     const centerTextPlugin = {
       id: 'centerTextPlugin',
       afterDraw(chart, args, options) {
@@ -65,24 +58,19 @@
         ctx.fillStyle = options.color || '#000';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-
-        // Calculate the percentage
-        const totalSpace = chart.data.datasets[0].data[0] + chart.data.datasets[0].data[1];
-        const usedSpace = chart.data.datasets[0].data[0];
-        const percentage = ((usedSpace / totalSpace) * 100).toFixed(2); // Calculate percentage
-
-        const text = options.text || (percentage + '%'); // Use the percentage
+        const total = chart.data.datasets[0].data[0] + chart.data.datasets[0].data[1];
+        const used = chart.data.datasets[0].data[0];
+        const percentage = ((used / total) * 100).toFixed(2);
+        const text = options.text || (percentage + '%');
         ctx.fillText(text, left + width / 2, top + height / 2);
         ctx.restore();
       }
     };
-
-    // Initialize the chart after fetching the initial data
-    async function initializeChart() {
-      const usedSpace = await fetchDiskData("utilization");
-      const totalSpace = await fetchDiskData("total");
-      const freeSpace = await fetchDiskData("free");
-
+  
+    async function initializeDiskChart() {
+      // Wait for initial data fetch
+      await fetchDiskData();
+  
       const ctx = document.getElementById('diskGraphing').getContext('2d');
       const diskChart = new Chart(ctx, {
         type: 'doughnut',
@@ -98,34 +86,31 @@
           responsive: false,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              position: 'top'
-            },
-            centerTextPlugin: {
-              font: '30px Arial',
-              color: '#000'
-            }
+            legend: { position: 'top' },
+            centerTextPlugin: { font: '30px Arial', color: '#000' },
+            title: { display: true, text: 'Disk ' + totalSpace + 'GB' }
           }
         },
         plugins: [centerTextPlugin]
       });
-
-      // Function to update the chart with new data
-      async function updateChart() {
-        const usedSpace = await fetchDiskData("utilization");
-        const freeSpace = await fetchDiskData("free");
-        if (usedSpace !== null && freeSpace !== null) {
-          diskChart.data.datasets[0].data = [usedSpace, freeSpace];
-          diskChart.update();
-        }
+  
+      // Update function now waits for fetchDiskData to complete
+      async function updateDiskChart() {
+        await fetchDiskData();
+        diskChart.data.datasets[0].data = [usedSpace, freeSpace];
+        diskChart.options.plugins.title.text = 'Disk ' + totalSpace + 'GB';
+        diskChart.update();
       }
-
-      // Update the chart every minute
-      setInterval(updateChart, 60000);
+  
+      // Update chart every 60 seconds
+      setInterval(updateDiskChart, 60000);
     }
-
-    // Start the initialization on page load
-    initializeChart();
+  
+    // Initialize disk chart on page load
+    initializeDiskChart();
+  
+    // Optionally, continue to update data in the background every 10 seconds if needed
+    setInterval(fetchDiskData, 10000);
   </script>
   <script>
     async function fetchUsageData(component) {
@@ -196,7 +181,8 @@
       setInterval(updateChart, 1000);
     }
 
-    // Start the initialization on page load
+    fetchDiskData()
+    
     initializeChart();
   </script>
 </body>

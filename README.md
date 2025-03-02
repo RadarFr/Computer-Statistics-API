@@ -15,7 +15,6 @@ This can be useful for people in the crypto space with monitoring their servers 
 as off site farms which cheaper electricity and such.
 
 This example isnt optmised for lower API calls, and calls quite a large ammount. 
-TODO: Fix this.
 
 ## Known API Improvements to be Made:
 - CPU Temp Monitoring

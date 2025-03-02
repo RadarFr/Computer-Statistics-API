@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Status</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    #chart-container {
+      width: 300px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #diskGraphing {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>Summary View</h2>
+  <div id="chart-container">
+    <canvas id="GPUusageGraphing"></canvas>
+  </div>
+  <div id="GPU-Infomation">
+    <p class="fw-bold" id="GPU-Name">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-Temp">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-Utilzation">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-MemUsed">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-MemFree">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-MemTotal">GPU: Loading...</p>
+    <p class="fw-light" id="GPU-Power">GPU: Loading...</p>
+  </div>
+  
+  <script>
+    async function SetGPUData(n) {
+      try {
+        const response = await fetch('http://localhost:8000/stats');
+        const data = await response.json();
+        document.getElementById('GPU-Name').textContent = data.GPU.name
+        document.getElementById('GPU-Temp').textContent = "Temp: " + data.GPU.temperature+"C"
+        if (data.GPU.temperature > 60){
+          document.getElementById('GPU-Temp').style.color = "red";
+        }else{
+          document.getElementById('GPU-Temp').style.color = "Black";
+        }
+        document.getElementById('GPU-Utilzation').textContent = "Usage: "+data.GPU.utilization+"%"
+        document.getElementById('GPU-MemFree').textContent = "Memory Free: "+data.GPU.mem_free
+        if (parseFloat(data.GPU.mem_free) < (parseFloat(data.GPU.mem_total) * 0.10)){
+          document.getElementById('GPU-MemFree').style.color = "red";
+        }else{
+          document.getElementById('GPU-MemFree').style.color = "Black";
+        }
+        document.getElementById('GPU-MemUsed').textContent = "Memory Used: "+data.GPU.mem_used
+        document.getElementById('GPU-MemTotal').textContent = "Memory Total: "+data.GPU.mem_total
+        document.getElementById('GPU-Power').textContent = "Power Used: "+data.GPU.power_usage
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return null;
+      }
+    }
+    setInterval(SetGPUData, 1000);
+  </script>
+  <script>
+      const ctx = document.getElementById('GPUusageGraphing').getContext('2d');
+      let gpuChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: [],
+              datasets: [
+                  {
+                      label: 'GPU Utilization (%)',
+                      data: [],
+                      borderColor: 'blue',
+                      fill: false
+                  },
+                  {
+                      label: 'Power Usage (W)',
+                      data: [],
+                      borderColor: 'red',
+                      fill: false
+                  }
+              ]
+          },
+          options: {
+              responsive: true,
+              scales: {
+                  x: { title: { display: true, text: 'Time' } },
+                  y: { title: { display: true, text: 'Value' }, beginAtZero: true }
+              }
+          }
+      });
+
+      async function fetchGPUData() {
+          try {
+              const response = await fetch('http://localhost:8000/stats'); // Change URL if needed
+              const data = await response.json();
+              
+              document.getElementById('gpu-util').textContent = data.GPU.utilization;
+              document.getElementById('gpu-power').textContent = data.GPU.power_usage;
+              
+              let now = new Date().toLocaleTimeString();
+              gpuChart.data.labels.push(now);
+              gpuChart.data.datasets[0].data.push(data.GPU.utilization);
+              gpuChart.data.datasets[1].data.push(parseInt(data.GPU.power_usage));
+              
+              if (gpuChart.data.labels.length > 20) {
+                  gpuChart.data.labels.shift();
+                  gpuChart.data.datasets[0].data.shift();
+                  gpuChart.data.datasets[1].data.shift();
+              }
+              
+              gpuChart.update();
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+      }
+      
+      fetchGPUData();
+      setInterval(fetchGPUData, 5000); // Refresh every 5 seconds
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>

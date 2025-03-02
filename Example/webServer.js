@@ -11,6 +11,10 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+app.get("/summary", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "summary.html"));
+});
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Website Server running on http://45.90.175.151:${port}`);
 });
