@@ -5,11 +5,11 @@ import os
 import time
 import psutil
 import pynvml
+import amdsmi
+from amdsmi import *
 
 def getCoreUsage():
-
     time.sleep(1)
-    
     cpu_usage_per_core = psutil.cpu_percent(percpu=True, interval=1)
     data = {
         "core": [],
@@ -30,12 +30,23 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-ifHasNvidaGPU = True
+ifHasNvidaGPU = True # defaults to NVIDA GPU
+ifHasAMDGPU = False
+
 try:
     import pynvml
-    pynvml.nvmlInit()
+    pynvml.nvmlInit
 except Exception:
     ifHasNvidaGPU = False
+
+try:
+    if ifHasNvidaGPU == False:
+        amdsmi.init()
+        ifHasAMDGPU = True
+    else:
+        pass
+except Exception:
+    ifHasAMDGPU = False
 
 @app.get("/stats")
 def send_stats():
@@ -82,8 +93,27 @@ def send_stats():
     else:
         response["GPU"] = "No GPU available"
 
-
-
+    if ifHasAMDGPU:
+        try:
+            devices = amdsmi.amdsmi_get_processor_handles()
+            if len(devices) == 0:
+                response["GPU"] = "No GPU available"
+            else:
+                for device in devices:
+                    vram_usage = amdsmi.amdsmi_get_gpu_vram_usage(device)
+                    response["GPU"] = {
+                        "gpu_status": ifHasAMDGPU,
+                        "name": ,
+                        "temperature": ,
+                        "utilization": ,
+                        "mem_free": vram_usage[""],
+                        "mem_used": vram_usage["vram_used"],
+                        "mem_total": vram_usage["vram_total"],
+                        "power_usage": ,
+                    }
+        except Exception as e:
+            response["GPU"] = {"error": str(e)}
+        
     return response
 
 @app.get("/SlowerStats")
@@ -95,6 +125,5 @@ def send_SlowerStats():
        }
     }
     return responce
-    
-
+  
 # Run with: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
