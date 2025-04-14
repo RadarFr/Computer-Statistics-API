@@ -38,7 +38,6 @@ app.add_middleware(
 )
 
 ifHasNvidaGPU = True # defaults to NVIDA GPU
-ifHasAMDGPU = False
 
 try:
     import pynvml
@@ -47,6 +46,7 @@ except Exception:
     ifHasNvidaGPU = False
 
 if amd_intilized == True:
+    ifHasAMDGPU = False #initialized when amd lib is imported
     try:
         if ifHasNvidaGPU == False:
             amdsmi.init()
