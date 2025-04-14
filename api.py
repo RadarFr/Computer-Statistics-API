@@ -5,8 +5,15 @@ import os
 import time
 import psutil
 import pynvml
-import amdsmi
-from amdsmi import *
+
+os_name = os.system()
+amd_intilized = False
+
+if os_name == "Linux":
+    import amdsmi
+    from amdsmi import *
+    print("You are running Linux, added AMD support has been initialized")
+    amd_intilized = True
 
 def getCoreUsage():
     time.sleep(1)
@@ -24,10 +31,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allows all headers
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET"],
+    allow_headers=["*"],
 )
 
 ifHasNvidaGPU = True # defaults to NVIDA GPU
@@ -39,32 +46,37 @@ try:
 except Exception:
     ifHasNvidaGPU = False
 
-try:
-    if ifHasNvidaGPU == False:
-        amdsmi.init()
-        ifHasAMDGPU = True
-    else:
-        pass
-except Exception:
-    ifHasAMDGPU = False
+if amd_intilized == True:
+    try:
+        if ifHasNvidaGPU == False:
+            amdsmi.init()
+            ifHasAMDGPU = True
+        else:
+            pass
+    except Exception:
+        ifHasAMDGPU = False
 
 @app.get("/stats")
 def send_stats():
     response = {
-        "win_username": os.getlogin(),
-        "status": "Online",
+        "SYSTEM":{
+            "os_name": os.getlogin(),
+            "os_system": os.system(),
+            "os_version": os.version(),
+        },
         "CPU": {
             "frequency": round(psutil.cpu_freq().current / 1000, 1),
             "utilization": psutil.cpu_percent(),
             "cores": psutil.cpu_count(),
+            "temp":"Not Available",
         },
-        "Memory": {
+        "MEMORY": {
             "utilization": psutil.virtual_memory().percent,
             "total": humanize.naturalsize(psutil.virtual_memory().total, binary=True),
             "free": humanize.naturalsize(psutil.virtual_memory().free, binary=True),
             "used": humanize.naturalsize(psutil.virtual_memory().used, binary=True),
         },
-        "Disk": {
+        "DISK": {
             "utilization": humanize.naturalsize(psutil.disk_usage("C:").used),
             "free": humanize.naturalsize(psutil.disk_usage("C:").free),
             "total": humanize.naturalsize(psutil.disk_usage("C:").total),
@@ -93,7 +105,7 @@ def send_stats():
     else:
         response["GPU"] = "No GPU available"
 
-    if ifHasAMDGPU:
+    if ifHasAMDGPU and amd_intilized:
         try:
             devices = amdsmi.amdsmi_get_processor_handles()
             if len(devices) == 0:

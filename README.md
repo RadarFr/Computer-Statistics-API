@@ -12,16 +12,21 @@ as well as ```Bootstrap``` to give structure and display data which is readable 
 to host and collect the data from the local machine as well as ```Node.Js``` to host our front end and serve it to users.
 
 This can be useful for people in the crypto space with monitoring their servers which are not in their immediate access, such
-as off site farms which cheaper electricity and such.
+as off site farms which cheaper electricity and provide benifts crypto mining.
 
-This example isnt optmised for lower API calls, and calls quite a large ammount. 
+This example isnt optmised for lower API calls, and calls quite a large ammount. In the future this will be fixed but the surgested
+use for this is to make 1 call a second and save the JSON responce to set every varable in the code. This will lower the ammount of calls, decreasing
+cpu usage, increaing internet bandwidth and making it sutable to crypto mine with.
+
+NOTE: AMD gpus are supported, on linux, this is due to a limation in the libary used which throws a error when running on windows.
+For the use case of cypto mining, this shouldnt be too much of a problem as most miners are on linux.
 
 ## Known API Improvements to be Made:
-- CPU Temp Monitoring
-  >Will have to add as its a very useful statistic to have on hand.
+- Security
+  > in the future I will have to add a better CORS policy as well as a password and roles system. These could include: ADMIN which can control
+  > other parts of the PC such as shutting down and restarting the pc. OBSERVER which cannot control anything, but can view every statisitc. and
+  > GUEST, which can only monitor GPU Temps, CPU Temps and Usages of both.
 - Support for Multi-GPU configurations  
   > Will be hard, but doable because I don’t currently have two or more GPUs on hand.
 - Support for Multi-CPU configurations  
   > This is a feature I will add in the later stages of the project, as most miners using this project will have multi-GPUs, not multi-CPUs, since CPU mining isn't very profitable.
-- Support for AMD GPUs  
-  > I will have to add this soon to accommodate red-team users and GPU miners, uses The AMD SMI Python Library
