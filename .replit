@@ -1,0 +1,14 @@
+[workflows]
+runButton = "Run API"
+
+[[workflows.workflow]]
+name = "Run API"
+author = 40069249
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "uvicorn api:app --host 0.0.0.0 --port 8000 --reload"
+
+[nix]
+channel = "stable-24_05"
