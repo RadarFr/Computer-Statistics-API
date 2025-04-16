@@ -1,15 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import humanize
+import platform
 import os
 import time
 import psutil
 import pynvml
 
-os_name = os.system()
+os_name = str(platform.system()).capitalize()
 amd_intilized = False
 
-if os_name == "Linux":
+if os_name == "LINUX":
     import amdsmi
     from amdsmi import *
     print("You are running Linux, added AMD support has been initialized")
@@ -125,7 +126,7 @@ def send_stats():
                     }
         except Exception as e:
             response["GPU"] = {"error": str(e)}
-        
+
     return response
 
 @app.get("/SlowerStats")
@@ -137,5 +138,5 @@ def send_SlowerStats():
        }
     }
     return responce
-  
+
 # Run with: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
