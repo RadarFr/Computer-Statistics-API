@@ -21,7 +21,13 @@ cpu usage, increaing internet bandwidth and making it sutable to crypto mine wit
 NOTE: AMD gpus are supported, on linux, this is due to a limation in the libary used which throws a error when running on windows.
 For the use case of cypto mining, this shouldnt be too much of a problem as most miners are on linux.
 
-## Known API Improvements to be Made:
+## Features to be added:
+- Shutdown and reboot buttons
+- ./Dashboard for quick viewing from Phone or other Laptop.
+-Processes break down.
+  > Break down processes by CPU, GPU or Ram usage. Along with a external task manager in the future.
+- Power logger
+  > logs Wattage, and calculates price per KW/h based on a previous input.
 - Security
   > in the future I will have to add a better CORS policy as well as a password and roles system. These could include: ADMIN which can control
   > other parts of the PC such as shutting down and restarting the pc. OBSERVER which cannot control anything, but can view every statisitc. and
@@ -30,3 +36,9 @@ For the use case of cypto mining, this shouldnt be too much of a problem as most
   > Will be hard, but doable because I don’t currently have two or more GPUs on hand.
 - Support for Multi-CPU configurations  
   > This is a feature I will add in the later stages of the project, as most miners using this project will have multi-GPUs, not multi-CPUs, since CPU mining isn't very profitable.
+- Crypto Miner intergration
+  > I'm going to intergrate this API into XMrig and T-Rex to merge the two apis to make it easier to view
+- Multi Pc viewer
+  > good for large scale crypto mining
+- LITE mode
+  > reduces resources used by the api.
