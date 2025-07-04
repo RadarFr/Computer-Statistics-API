@@ -15,6 +15,20 @@ if is_windows == False:
     import amdsmi
     from amdsmi import *
 
+with open('games.json') as f:
+    games = json.load(f)
+    
+def get_games():
+    running_applications = []
+    active_processes = set(proc.info['name']
+                           for proc in psutil.process_iter(['pid', 'name']))
+
+    for game in games:
+        if game['exe'] in active_processes:
+            print(f"{game['name']} is running")
+            running_applications.append(game['name'])
+    return str(running_applications)
+
 def getCoreUsage():
     time.sleep(1)
     cpu_usage_per_core = psutil.cpu_percent(percpu=True, interval=1)
@@ -138,5 +152,12 @@ def send_SlowerStats():
        }
     }
     return responce
+
+@app.get("/applications")
+def games_section():
+    games = get_games()
+    if games == "[]":
+        games = "[No current Games]"
+    return games
   
 # Run with: uvicorn api:app --host 0.0.0.0 --port 8000 --reload
